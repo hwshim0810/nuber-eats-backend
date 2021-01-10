@@ -9,8 +9,8 @@ export class JwtModule {
   static forRoot(options: JwtModuleOptions): DynamicModule {
     return {
       module: JwtModule,
-      exports: [{ provide: CONFIG_OPTIONS, useValue: options }, JwtService],
-      providers: [JwtService],
+      providers: [{ provide: CONFIG_OPTIONS, useValue: options }, JwtService],
+      exports: [JwtService],
     };
   }
 }
