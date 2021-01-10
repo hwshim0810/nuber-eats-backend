@@ -10,10 +10,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from '@hapi/joi';
 
 import { UsersModule } from './users/users.module';
-import { CommonModule } from './common/common.module';
 import { User } from './users/entities/user.entity';
 import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -47,12 +47,13 @@ import { JwtMiddleware } from './jwt/jwt.middleware';
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
+      context: ({ req }) => ({ user: req['user'] }),
     }),
     JwtModule.forRoot({
       privateKey: process.env.PRIVATE_KEY,
     }),
     UsersModule,
-    CommonModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
