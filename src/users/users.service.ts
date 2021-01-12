@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ok } from 'assert';
 import { Repository } from 'typeorm';
 
 import { CreateAccountInput } from './dtos/create-account.dto';
