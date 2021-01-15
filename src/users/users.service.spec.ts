@@ -9,12 +9,13 @@ import { UsersService } from './users.service';
 
 const mockRepository = () => ({
   findOne: jest.fn(),
+  findOneOrFail: jest.fn(),
   save: jest.fn(),
   create: jest.fn(),
 });
 
 const mockJwtService = {
-  sign: jest.fn(),
+  sign: jest.fn(() => 'signed-token'),
   verify: jest.fn(),
 };
 
@@ -26,6 +27,7 @@ type MockRepository<T> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
 describe('UsersService', () => {
   let service: UsersService;
+  let jwtService: JwtService;
   let usersRepository: MockRepository<User>;
   let verificationRepository: MockRepository<Verification>;
   let mailService: MailService;
@@ -44,6 +46,7 @@ describe('UsersService', () => {
       ],
     }).compile();
     service = module.get<UsersService>(UsersService);
+    jwtService = module.get<JwtService>(JwtService);
     usersRepository = module.get(getRepositoryToken(User));
     verificationRepository = module.get(getRepositoryToken(Verification));
     mailService = module.get<MailService>(MailService);
@@ -125,6 +128,42 @@ describe('UsersService', () => {
         expect.any(Object),
       );
       expect(result).toEqual({ ok: false, error: 'User not found' });
+    });
+
+    it('should fail if the password is wrong', async () => {
+      const mockedUser = {
+        id: 1,
+        checkPassword: jest.fn(() => Promise.resolve(false)),
+      };
+      usersRepository.findOne.mockResolvedValue(mockedUser);
+      const result = await service.login(loginArgs);
+      expect(result).toEqual({ ok: false, error: 'Wrong password' });
+    });
+
+    it('should return token if password correct', async () => {
+      const mockedUser = {
+        id: 1,
+        checkPassword: jest.fn(() => Promise.resolve(true)),
+      };
+      usersRepository.findOne.mockResolvedValue(mockedUser);
+      const result = await service.login(loginArgs);
+      expect(jwtService.sign).toHaveBeenCalledTimes(1);
+      expect(jwtService.sign).toHaveBeenCalledWith(expect.any(Number));
+      expect(result).toEqual({ ok: true, token: 'signed-token' });
+    });
+  });
+
+  describe('findById', () => {
+    const findArgs = { id: 1 };
+    it('should find an existing user', async () => {
+      usersRepository.findOneOrFail.mockResolvedValue(findArgs);
+      const result = await service.findById(1);
+      expect(result).toEqual({ ok: true, user: findArgs });
+    });
+    it('should fail if no user if found', async () => {
+      usersRepository.findOneOrFail.mockRejectedValue(new Error());
+      const result = await service.findById(1);
+      expect(result).toEqual({ ok: false, error: 'User Not Found' });
     });
   });
 });
