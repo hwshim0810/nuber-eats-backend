@@ -2,7 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
-import { getConnection } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import { getRepositoryToken } from '@nestjs/typeorm';
 
 const ENDPOINT = '/graphql';
 
@@ -17,6 +19,7 @@ const testUser = {
 
 describe('UserModule (e2e)', () => {
   let app: INestApplication;
+  let usersRepository: Repository<User>;
   let jwtToken: string;
 
   beforeAll(async () => {
@@ -25,6 +28,7 @@ describe('UserModule (e2e)', () => {
     }).compile();
 
     app = module.createNestApplication();
+    usersRepository = module.get<Repository<User>>(getRepositoryToken(User));
     await app.init();
   });
 
@@ -141,6 +145,70 @@ describe('UserModule (e2e)', () => {
           expect(login.ok).toBe(false);
           expect(login.error).toBe('Wrong password');
           expect(login.token).toBe(null);
+        });
+    });
+  });
+
+  describe('userProfile', () => {
+    let userId: number;
+
+    beforeAll(async () => {
+      const [user] = await usersRepository.find();
+      userId = user.id;
+    });
+
+    it('should see a user profile', () => {
+      return request(app.getHttpServer())
+        .post(ENDPOINT)
+        .set('X-JWT', jwtToken)
+        .send({
+          query: `{
+          userProfile(userId: ${userId}) {
+            ok
+            error
+            user {
+              id
+            }
+          }
+        }`,
+        })
+        .expect(200)
+        .expect(res => {
+          const {
+            body: {
+              data: { userProfile },
+            },
+          } = res;
+          expect(userProfile.ok).toBe(true);
+          expect(userProfile.error).toBe(null);
+          expect(userProfile.user.id).toBe(userId);
+        });
+    });
+    it('shoud not find a profile', () => {
+      return request(app.getHttpServer())
+        .post(ENDPOINT)
+        .set('X-JWT', jwtToken)
+        .send({
+          query: `{
+          userProfile(userId: 123) {
+            ok
+            error
+            user {
+              id
+            }
+          }
+        }`,
+        })
+        .expect(200)
+        .expect(res => {
+          const {
+            body: {
+              data: { userProfile },
+            },
+          } = res;
+          expect(userProfile.ok).toBe(false);
+          expect(userProfile.error).toBe('User Not Found');
+          expect(userProfile.user).toBe(null);
         });
     });
   });
