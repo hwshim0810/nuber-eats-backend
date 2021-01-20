@@ -8,7 +8,7 @@ import {
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { IsEnum, IsString } from 'class-validator';
+import { IsBoolean, IsEnum, IsString } from 'class-validator';
 
 enum UserRole {
   Owner,
@@ -39,6 +39,7 @@ export class User extends CoreEntity {
 
   @Column({ default: false })
   @Field(type => Boolean)
+  @IsBoolean()
   verified: boolean;
 
   @BeforeInsert()
