@@ -5,6 +5,10 @@ import { User } from 'src/users/entities/user.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { Category } from './category.entity';
 
+// #3.5 Mapped Types 강의참고
+// isAbstract 사용으로 Mapped Types
+// 사용시 Decorator 교체를 할 필요가 없어지고 Schema에는 포함되지 않음
+// ex) @PartialType(Restaurant, InputType) => @PartialType(Restaurant)
 @InputType('RestaurantInputType', { isAbstract: true })
 @ObjectType()
 @Entity()
