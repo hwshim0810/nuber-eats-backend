@@ -61,7 +61,7 @@ export class RestaurantsResolver {
     return this.restaurantService.editRestaurant(authUser, input);
   }
 
-  @Mutation(returns => DeleteRestaurantInput)
+  @Mutation(returns => DeleteRestaurantOutput)
   deleteRestaurant(
     @AuthUser() authUser: User,
     @Args('input') input: DeleteRestaurantInput,
