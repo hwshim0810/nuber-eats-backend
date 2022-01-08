@@ -4,6 +4,7 @@ import { User } from 'src/users/entities/user.entity';
 import { ILike, Repository } from 'typeorm';
 import { AllCategoriesOutput } from './dtos/all-categories.dto';
 import { CategoryInput, CategoryOutput } from './dtos/category.dto';
+import { CreateDishInput, CreateDishOutput } from './dtos/create-dish.dto';
 import {
   CreateRestaurantInput,
   CreateRestaurantOutput,
@@ -164,7 +165,9 @@ export class RestaurantsService {
     restaurantId,
   }: RestaurantInput): Promise<RestaurantOutput> {
     try {
-      const restaurant = await this.restaurants.findOne(restaurantId);
+      const restaurant = await this.restaurants.findOne(restaurantId, {
+        relations: ['menu'],
+      });
       if (!restaurant) {
         return { ok: false, error: 'Restaurant not found' };
       }
@@ -194,6 +197,24 @@ export class RestaurantsService {
       };
     } catch {
       return { ok: false, error: 'Could not search restaurant' };
+    }
+  }
+
+  async createDish(
+    owner: User,
+    { restaurantId, ...createDishInput }: CreateDishInput,
+  ): Promise<CreateDishOutput> {
+    try {
+      const restaurant = await this.restaurants.findOne(restaurantId);
+      if (!restaurant) {
+        return { ok: false, error: 'Restaurant not found' };
+      }
+      if (owner.id !== restaurant.ownerId) {
+        return { ok: false, error: 'You are not the owner of this restaurant' };
+      }
+      return { ok: true };
+    } catch {
+      return { ok: false, error: 'Could not create dish' };
     }
   }
 }
