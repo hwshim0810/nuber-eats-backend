@@ -101,4 +101,8 @@ export class RestaurantsService {
       return { ok: false, error: 'Could not get categories' };
     }
   }
+
+  countRestaurants(category: Category): Promise<number> {
+    return this.restaurants.count({ category });
+  }
 }
