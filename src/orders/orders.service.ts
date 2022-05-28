@@ -18,9 +18,15 @@ export class OrderService {
     customer: User,
     { restaurantId, items }: CreateOrderInput,
   ): Promise<CreateOrderOutput> {
-    const restaurant = this.restaurants.findOne(restaurantId);
+    const restaurant = await this.restaurants.findOne(restaurantId);
     if (!restaurant) {
       return { ok: false, error: 'Restaurant not found' };
     }
+    const order = await this.orders.save(
+      this.orders.create({
+        customer,
+        restaurant,
+      }),
+    );
   }
 }
