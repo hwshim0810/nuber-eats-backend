@@ -36,6 +36,7 @@
     "form-data": "^3.0.0",
     "got": "^11.8.1",
     "graphql": "^15.4.0",
+    "graphql-subscriptions": "^2.0.0",
     "graphql-tools": "^7.0.2",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.5.1",
