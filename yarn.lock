@@ -1299,6 +1299,14 @@
     multer "1.4.2"
     tslib "2.0.3"
 
+"@nestjs/schedule@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/schedule/-/schedule-2.1.0.tgz#a2e21b2078a0c3d56552d40cc97336aa5bbfecdf"
+  integrity sha512-4Xaw56WiW3VsxEPPnj/iDtfjcO+sUZyYAeRxD0gnF5havncxjAnv52Iw7UH3DuzzUA784xPGgGje3Fq0Gu925g==
+  dependencies:
+    cron "2.0.0"
+    uuid "8.3.2"
+
 "@nestjs/schematics@^7.0.0", "@nestjs/schematics@^7.1.0":
   version "7.2.6"
   resolved "https://registry.yarnpkg.com/@nestjs/schematics/-/schematics-7.2.6.tgz#cc2c029927550f9b551947053849ebff66c99803"
@@ -3513,6 +3521,13 @@ cosmiconfig@^6.0.0:
     parse-json "^5.0.0"
     path-type "^4.0.0"
     yaml "^1.7.2"
+
+cron@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/cron/-/cron-2.0.0.tgz#15c6bf37c1cebf6da1d7a688b9ba1c68338bfe6b"
+  integrity sha512-RPeRunBCFr/WEo7WLp8Jnm45F/ziGJiHVvVQEBSDTSGu6uHW49b2FOP2O14DcXlGJRLhwE7TIoDzHHK4KmlL6g==
+  dependencies:
+    luxon "^1.23.x"
 
 cross-env@^7.0.3:
   version "7.0.3"
@@ -6305,6 +6320,11 @@ lru-cache@^6.0.0:
   integrity sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
   dependencies:
     yallist "^4.0.0"
+
+luxon@^1.23.x:
+  version "1.28.0"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.28.0.tgz#e7f96daad3938c06a62de0fb027115d251251fbf"
+  integrity sha512-TfTiyvZhwBYM/7QdAVDh+7dBTBA29v4ik0Ce9zda3Mnf8on1S5KJI8P2jKFZ8+5C0jhmr0KwJEO/Wdpm0VeWJQ==
 
 macos-release@^2.2.0:
   version "2.4.1"
