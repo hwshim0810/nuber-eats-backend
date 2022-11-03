@@ -193,6 +193,9 @@ export class RestaurantsService {
         },
         take: 25,
         skip: 25 * (page - 1),
+        order: {
+          isPromoted: 'DESC',
+        },
       });
       return {
         ok: true,
